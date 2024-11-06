@@ -1,20 +1,18 @@
 package com.marllonmendez.conversordeunidades.components
 
-import android.app.Activity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.marllonmendez.conversordeunidades.enums.UnitLabel
+import com.marllonmendez.conversordeunidades.enums.UnitType
 import com.marllonmendez.conversordeunidades.ui.theme.PrimaryDark
 import com.marllonmendez.conversordeunidades.ui.theme.PrimaryLight
 
@@ -25,15 +23,21 @@ fun converterField(
     onValueChange: (String) -> Unit,
     unitValue: String,
     onUnitValueChange: (String) -> Unit,
-    options: List<String> = listOf("Centímetros", "Metros", "Quilômetros", "Milhas"),
-    onFocus: () -> Unit
+    options: List<String> = listOf(
+        UnitType.CENTIMETERS.value,
+        UnitType.METERS.value,
+        UnitType.KILOMETERS.value,
+        UnitType.MILES.value,
+    ),
+    onFocus: () -> Unit,
+    onEnable: Boolean
 ) {
     val unitLabel = when (unitValue) {
-        "Centímetros" -> "Cm"
-        "Metros" -> "M"
-        "Quilômetros" -> "Km"
-        "Milhas" -> "Mi"
-        else -> unitValue
+        UnitType.CENTIMETERS.value -> UnitLabel.CM.value
+        UnitType.METERS.value -> UnitLabel.M.value
+        UnitType.KILOMETERS.value -> UnitLabel.KM.value
+        UnitType.MILES.value -> UnitLabel.MI.value
+        else -> UnitLabel.CM.value
     }
 
     val colorGradient = Brush.horizontalGradient(
@@ -43,10 +47,13 @@ fun converterField(
         )
     )
 
+    var isFocused by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(107.dp)
+            .height(115.dp)
             .background(
                 colorGradient,
                 shape = MaterialTheme.shapes.small
@@ -64,28 +71,36 @@ fun converterField(
             ) {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleMedium,
                 )
 
                 TextField(
                     value = value,
-                    onValueChange = onValueChange,
-                    // aqui
+                    onValueChange = {
+                        onValueChange(it)
+                    },
                     modifier = Modifier
-                        .width(100.dp)
+                        .width(200.dp)
                         .height(50.dp)
-                        .onFocusChanged { onFocus() },
+                        .onFocusChanged { focusState ->
+                            isFocused = focusState.isFocused
+                            onFocus()
+                        },
                     readOnly = true,
-                    textStyle = MaterialTheme.typography.labelSmall,
-                    maxLines = 1,
+                    enabled = onEnable,
+                    textStyle = MaterialTheme.typography.labelSmall.copy(
+                        color = if (isFocused) Color.Black else Color.White,
+                        textAlign = TextAlign.End,
+                    ),
+                    shape = MaterialTheme.shapes.small,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        cursorColor = Color.White,
+                        disabledContainerColor = Color.Transparent,
+                        disabledBorderColor = Color.Transparent,
                     )
-
                 )
             }
 
@@ -96,10 +111,8 @@ fun converterField(
             ) {
                 Text(
                     text = unitLabel,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.titleSmall,
                 )
-
-                var expanded by remember { mutableStateOf(false) }
 
                 Box {
                     TextButton(
@@ -110,17 +123,34 @@ fun converterField(
                     ) {
                         Text(
                             text = unitValue,
-                            color = Color.White,
-                            fontSize = 14.sp
+                            style = MaterialTheme.typography.titleSmall,
                         )
                     }
+
                     DropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .width(150.dp)
+                            .background(MaterialTheme.colorScheme.secondary),
+                        shape = MaterialTheme.shapes.small,
                     ) {
+                        // opções: Centímetros, Metros, Quilômetros e Milhas
                         options.forEach { unit ->
                             DropdownMenuItem(
-                                text = { Text(unit) },
+                                text = {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            unit,
+                                            textAlign = TextAlign.End,
+                                            style = MaterialTheme.typography.titleSmall,
+                                            modifier = Modifier.align(Alignment.CenterEnd)
+                                        )
+                                    }
+                                },
                                 onClick = {
                                     onUnitValueChange(unit)
                                     expanded = false

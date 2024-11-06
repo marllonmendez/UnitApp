@@ -11,33 +11,49 @@ import androidx.compose.ui.unit.sp
 val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
-        lineHeight = 28.sp,
+        lineHeight = 32.sp,
         letterSpacing = 0.sp,
     ),
-    labelLarge = TextStyle(
+    titleMedium = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
-        lineHeight = 16.sp,
+        lineHeight = 22.sp,
         letterSpacing = 0.5.sp,
-        color = Color.White
+        color = SurfaceLight
     ),
-    labelMedium = TextStyle(
+    titleSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp,
-        color = Color.White
+        color = SurfaceLight
+    ),
+    labelLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 27.sp,
+        lineHeight = 27.sp,
+        letterSpacing = 0.sp,
+        color = SurfaceLight
+    ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 22.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp,
+        color = SurfaceLight
     ),
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Light,
+        fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp,
-        color = Color.White
+        color = SurfaceLight
     ),
 )

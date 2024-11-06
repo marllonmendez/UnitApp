@@ -9,6 +9,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.marllonmendez.conversordeunidades.components.numericKeyboard
 import com.marllonmendez.conversordeunidades.components.converterField
+import com.marllonmendez.conversordeunidades.enums.ActiveField
+import com.marllonmendez.conversordeunidades.enums.UnitType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,60 +32,54 @@ fun main(controller: NavController) {
         },
         containerColor = MaterialTheme.colorScheme.background,
     ) {
-        var activeField by remember { mutableStateOf<ActiveField?>(null) }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp, 100.dp, 20.dp, 20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
+            var activeField by remember { mutableStateOf<ActiveField?>(null) }
             var fromValue by remember { mutableStateOf("0") }
             var toValue by remember { mutableStateOf("0") }
-            var fromUnit by remember { mutableStateOf("Centímetros") }
-            var toUnit by remember { mutableStateOf("Metros") }
+            var fromUnit by remember { mutableStateOf(UnitType.CENTIMETERS) }
+            var toUnit by remember { mutableStateOf(UnitType.METERS) }
 
             converterField(
                 label = "De",
                 value = fromValue,
                 onValueChange = { fromValue = it },
-                unitValue = fromUnit,
-                onUnitValueChange = { fromUnit = it },
-                onFocus = { activeField = ActiveField.From}
+                unitValue = fromUnit.value,
+                onUnitValueChange = { selectedUnit ->
+                    fromUnit = UnitType.entries.find { it.value == selectedUnit } ?: fromUnit
+                },
+                onFocus = { activeField = ActiveField.FROM },
+                onEnable = true
             )
 
             converterField(
                 label = "Para",
                 value = toValue,
-                onValueChange = { toValue = it },
-                unitValue = toUnit,
-                onUnitValueChange = { toUnit = it },
-                onFocus = { activeField = ActiveField.To}
+                onValueChange = {},
+                unitValue = toUnit.value,
+                onUnitValueChange = { selectedUnit ->
+                    toUnit = UnitType.entries.find { it.value == selectedUnit } ?: toUnit
+                },
+                onFocus = {},
+                onEnable = false
             )
 
             numericKeyboard(
                 onNumberClick = { number ->
                     when (activeField) {
-                        ActiveField.From -> fromValue += number
-                        ActiveField.To -> toValue += number
+                        ActiveField.FROM -> fromValue += number
+                        ActiveField.TO -> {}
                         null -> {}
                     }
                 },
                 onComma = {
                     when (activeField) {
-                        ActiveField.From -> {
-                            // Adiciona a vírgula se não estiver vazia e não houver uma já presente
-                            if (!fromValue.contains(",")) {
-                                fromValue += ","
-                            }
-                        }
-                        ActiveField.To -> {
-                            // Adiciona a vírgula se não estiver vazia e não houver uma já presente
-                            if (!toValue.contains(",")) {
-                                toValue += ","
-                            }
-                        }
+                        ActiveField.FROM -> if (!fromValue.contains(",")) fromValue += ","
+                        ActiveField.TO -> {}
                         null -> {}
                     }
                 },
@@ -93,14 +89,13 @@ fun main(controller: NavController) {
                 },
                 onBackspace = {
                     when (activeField) {
-                        ActiveField.From -> if (fromValue.isNotEmpty()) {
-                            fromValue = fromValue.dropLast(1)
-                        }
-                        ActiveField.To -> if (toValue.isNotEmpty()) {
-                            toValue = toValue.dropLast(1)
-                        }
+                        ActiveField.FROM -> if (fromValue.isNotEmpty()) fromValue = fromValue.dropLast(1)
+                        ActiveField.TO -> {}
                         null -> {}
                     }
+                },
+                onEquals = {
+                    toValue = convertValue(fromValue, fromUnit, toUnit)
                 }
             )
 
@@ -108,7 +103,22 @@ fun main(controller: NavController) {
     }
 }
 
-enum class ActiveField {
-    From,
-    To
+fun convertValue(fromValue: String, fromUnit: UnitType, toUnit: UnitType): String {
+    val value = fromValue.replace(",", ".").toDoubleOrNull() ?: return "0"
+
+    val fromUnitValue = when (fromUnit) {
+        UnitType.CENTIMETERS -> value / 100
+        UnitType.METERS -> value
+        UnitType.KILOMETERS -> value * 1000
+        UnitType.MILES -> value * 1609.344
+    }
+
+    val convertedValue = when (toUnit) {
+        UnitType.CENTIMETERS -> fromUnitValue * 100
+        UnitType.METERS -> fromUnitValue
+        UnitType.KILOMETERS -> fromUnitValue / 1000
+        UnitType.MILES -> fromUnitValue / 1609.344
+    }
+
+    return "%.2f".format(convertedValue).replace(".", ",")
 }

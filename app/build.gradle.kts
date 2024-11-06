@@ -12,10 +12,9 @@ android {
         applicationId = "com.marllonmendez.conversordeunidades"
         minSdk = 26
         maxSdk = 35
-        //noinspection EditedTargetSdkVersion
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

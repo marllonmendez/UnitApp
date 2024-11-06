@@ -7,16 +7,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.marllonmendez.conversordeunidades.ui.theme.PrimaryDark
 import com.marllonmendez.conversordeunidades.ui.theme.PrimaryLight
-import com.marllonmendez.conversordeunidades.ui.theme.Quaternary
+import com.marllonmendez.conversordeunidades.ui.theme.Tertiary
 
 @Composable
 fun numericKeyboard(
     onNumberClick: (String) -> Unit,
     onComma: () -> Unit,
     onClear: () -> Unit,
-    onBackspace: () -> Unit
+    onBackspace: () -> Unit,
+    onEquals: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -50,7 +54,7 @@ fun numericKeyboard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             numberButton(number = "0", onClick = onNumberClick)
-            actionButton(onClick = onComma, label = "=")
+            actionButton(onClick = onEquals, label = "=")
         }
     }
 }
@@ -69,12 +73,15 @@ private fun numberButton(number: String, onClick: (String) -> Unit) {
         },
         shape = MaterialTheme.shapes.medium,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary
+            containerColor = PrimaryDark
         )
     ) {
         Text(
             text = number,
-            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = 24.sp
+            ),
         )
     }
 }
@@ -83,27 +90,27 @@ private fun numberButton(number: String, onClick: (String) -> Unit) {
 private fun actionButton(onClick: () -> Unit, label: String) {
     Button(
         onClick = onClick,
-        modifier = if (label == "=") {
-            Modifier
-                .size(64.dp)
-        } else {
-            Modifier
-                .size(64.dp)
-        },
+        modifier = Modifier
+            .size(64.dp),
         shape = MaterialTheme.shapes.medium,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (label == "=") {
-                PrimaryLight
-            } else if (label == "C") {
-                Quaternary
-            } else {
-                MaterialTheme.colorScheme.tertiary
+            containerColor = when (label) {
+                "=" -> PrimaryLight
+                "C" -> Tertiary
+                else -> MaterialTheme.colorScheme.secondary
             }
-        )
+        ),
     ) {
         Text(
             label,
-            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            style = if (label == "=") {
+                MaterialTheme.typography.labelLarge
+            } else {
+                MaterialTheme.typography.labelMedium.copy(
+                    fontSize = 24.sp
+                )
+            }
         )
     }
 }
