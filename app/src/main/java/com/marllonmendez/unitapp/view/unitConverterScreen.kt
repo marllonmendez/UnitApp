@@ -1,4 +1,4 @@
-package com.marllonmendez.conversordeunidades.view
+package com.marllonmendez.unitapp.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -7,10 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.marllonmendez.conversordeunidades.components.numericKeyboard
-import com.marllonmendez.conversordeunidades.components.converterField
-import com.marllonmendez.conversordeunidades.enums.ActiveField
-import com.marllonmendez.conversordeunidades.enums.UnitType
+import com.marllonmendez.unitapp.components.numericKeyboard
+import com.marllonmendez.unitapp.components.converterField
+import com.marllonmendez.unitapp.enums.ActiveField
+import com.marllonmendez.unitapp.enums.UnitType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.marllonmendez.conversordeunidades.components
+package com.marllonmendez.unitapp.components
 
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -16,10 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-import com.marllonmendez.conversordeunidades.enums.UnitLabel
-import com.marllonmendez.conversordeunidades.enums.UnitType
-import com.marllonmendez.conversordeunidades.ui.theme.PrimaryDark
-import com.marllonmendez.conversordeunidades.ui.theme.PrimaryLight
+import com.marllonmendez.unitapp.enums.UnitLabel
+import com.marllonmendez.unitapp.enums.UnitType
+import com.marllonmendez.unitapp.ui.theme.PrimaryDark
+import com.marllonmendez.unitapp.ui.theme.PrimaryLight
 
 @Composable
 fun converterField(

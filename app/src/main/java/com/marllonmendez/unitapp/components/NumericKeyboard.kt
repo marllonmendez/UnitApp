@@ -1,24 +1,21 @@
-package com.marllonmendez.conversordeunidades.components
+package com.marllonmendez.unitapp.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import com.marllonmendez.conversordeunidades.ui.theme.PrimaryDark
-import com.marllonmendez.conversordeunidades.ui.theme.PrimaryLight
-import com.marllonmendez.conversordeunidades.ui.theme.SurfaceLight
-import com.marllonmendez.conversordeunidades.ui.theme.Tertiary
+import com.marllonmendez.unitapp.ui.theme.PrimaryDark
+import com.marllonmendez.unitapp.ui.theme.PrimaryLight
+import com.marllonmendez.unitapp.ui.theme.SurfaceLight
+import com.marllonmendez.unitapp.ui.theme.Tertiary
 
 @Composable
 fun numericKeyboard(

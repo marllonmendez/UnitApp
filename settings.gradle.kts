@@ -18,6 +18,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Conversor de Unidades"
+rootProject.name = "UnitApp"
 include(":app")
  
