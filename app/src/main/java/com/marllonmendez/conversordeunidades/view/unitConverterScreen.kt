@@ -6,7 +6,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+
 import com.marllonmendez.conversordeunidades.components.numericKeyboard
 import com.marllonmendez.conversordeunidades.components.converterField
 import com.marllonmendez.conversordeunidades.enums.ActiveField
@@ -14,7 +14,7 @@ import com.marllonmendez.conversordeunidades.enums.UnitType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun main(controller: NavController) {
+fun unitConverterScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -36,7 +36,7 @@ fun main(controller: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp, 100.dp, 20.dp, 20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             var activeField by remember { mutableStateOf<ActiveField?>(null) }
             var fromValue by remember { mutableStateOf("0") }
@@ -69,7 +69,7 @@ fun main(controller: NavController) {
             )
 
             numericKeyboard(
-                onNumberClick = { number ->
+                onNumber = { number ->
                     when (activeField) {
                         ActiveField.FROM -> fromValue += number
                         ActiveField.TO -> {}
@@ -94,6 +94,15 @@ fun main(controller: NavController) {
                         null -> {}
                     }
                 },
+                onExchange = {
+                    val tempUnit = fromUnit
+                    fromUnit = toUnit
+                    toUnit = tempUnit
+
+                    val tempValue = fromValue
+                    fromValue = toValue
+                    toValue = tempValue
+                },
                 onEquals = {
                     toValue = convertValue(fromValue, fromUnit, toUnit)
                 }
@@ -103,7 +112,7 @@ fun main(controller: NavController) {
     }
 }
 
-fun convertValue(fromValue: String, fromUnit: UnitType, toUnit: UnitType): String {
+private fun convertValue(fromValue: String, fromUnit: UnitType, toUnit: UnitType): String {
     val value = fromValue.replace(",", ".").toDoubleOrNull() ?: return "0"
 
     val fromUnitValue = when (fromUnit) {
@@ -120,5 +129,5 @@ fun convertValue(fromValue: String, fromUnit: UnitType, toUnit: UnitType): Strin
         UnitType.MILES -> fromUnitValue / 1609.344
     }
 
-    return "%.2f".format(convertedValue).replace(".", ",")
+    return convertedValue.toString().replace(".", ",")
 }

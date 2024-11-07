@@ -1,5 +1,9 @@
 package com.marllonmendez.conversordeunidades.components
 
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -11,6 +15,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+
 import com.marllonmendez.conversordeunidades.enums.UnitLabel
 import com.marllonmendez.conversordeunidades.enums.UnitType
 import com.marllonmendez.conversordeunidades.ui.theme.PrimaryDark
@@ -53,7 +58,7 @@ fun converterField(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(115.dp)
+            .height(110.dp)
             .background(
                 colorGradient,
                 shape = MaterialTheme.shapes.small
@@ -75,9 +80,9 @@ fun converterField(
                 )
 
                 TextField(
-                    value = value,
+                    value = formatNumber(value),
                     onValueChange = {
-                        onValueChange(it)
+                        onValueChange(formatNumber(it))
                     },
                     modifier = Modifier
                         .width(200.dp)
@@ -89,12 +94,11 @@ fun converterField(
                     readOnly = true,
                     enabled = onEnable,
                     textStyle = MaterialTheme.typography.labelSmall.copy(
-                        color = if (isFocused) Color.Black else Color.White,
                         textAlign = TextAlign.End,
                     ),
                     shape = MaterialTheme.shapes.small,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
+                        focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -131,11 +135,11 @@ fun converterField(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .width(150.dp)
+                            .padding(horizontal = 20.dp)
                             .background(MaterialTheme.colorScheme.secondary),
+                        containerColor = MaterialTheme.colorScheme.secondary,
                         shape = MaterialTheme.shapes.small,
                     ) {
-                        // opções: Centímetros, Metros, Quilômetros e Milhas
                         options.forEach { unit ->
                             DropdownMenuItem(
                                 text = {
@@ -145,9 +149,9 @@ fun converterField(
                                     ) {
                                         Text(
                                             unit,
-                                            textAlign = TextAlign.End,
+                                            textAlign = TextAlign.Center,
                                             style = MaterialTheme.typography.titleSmall,
-                                            modifier = Modifier.align(Alignment.CenterEnd)
+                                            modifier = Modifier.align(Alignment.Center)
                                         )
                                     }
                                 },
@@ -161,5 +165,30 @@ fun converterField(
                 }
             }
         }
+    }
+}
+
+private fun formatNumber(value: String): String {
+    val formatter = NumberFormat.getInstance(Locale("pt", "BR")) as DecimalFormat
+    val cleanInput = value.replace(".", "")
+
+    if (cleanInput.isEmpty()) return value
+
+    try {
+        val decimal = value.indexOf(",")
+        return if (decimal != -1) {
+            val integerPart = cleanInput.substring(0, decimal)
+            val decimalPart = cleanInput.substring(decimal)
+
+            val number = integerPart.toLong()
+            val formattedInteger = formatter.format(number)
+
+            "$formattedInteger$decimalPart"
+        } else {
+            val number = cleanInput.toLong()
+            formatter.format(number)
+        }
+    } catch (e: NumberFormatException) {
+        return value
     }
 }
